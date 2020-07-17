@@ -1,54 +1,24 @@
-const mongoose = require("mongoose");
-const bcrypt = require('bcryptjs');
-const Schema = mongoose.Schema;// Create Schema
-
-const UserSchema = new Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique : true
-  },
-  emailVerify:{
-    type: Boolean,
-    default: false
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  institution: {
-    type: String,
-    required: true
-  },
-  subject: {
-    type: String,
-    required: true
-  },
-  date: {
-    type: Date,
-    default: Date.now
-  },
-  meetings:[]
-});
+const DB = require('../config/connectDB')
 
 
-UserSchema.pre('save', async function(next){
-  const user = this;
-  //Hash the password with a salt round of 10, the higher the rounds the more secure, but the slower
-  //your application becomes.
-  const hash = await bcrypt.hash(this.password, 10);
-  this.password = hash;
-  next();
-});
-
-UserSchema.methods.isValidPassword = async function(password){
-  const user = this;
-  const compare = await bcrypt.compare(password, user.password);
-  return compare;
+const CreateUserSchema = async () => {
+    try {
+        sqlQuery = `CREATE TABLE IF NOT EXISTS user(
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(100),
+            email VARCHAR(100) UNIQUE,
+            emailVerify BOOLEAN NOT NULL DEFAULT TRUE,
+            password VARCHAR(255),
+            organization VARCHAR(100),
+            position VARCHAR(100),
+            createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )`
+        await DB.pool.query(sqlQuery)
+    }
+    catch (err) {
+        console.log(err)
+    }
 }
 
-module.exports = mongoose.model("Student", UserSchema);
+
+module.exports.CreateUserSchema = CreateUserSchema
