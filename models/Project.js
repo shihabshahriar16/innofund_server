@@ -24,14 +24,24 @@ const createProjectSchema = async () => {
   }
 };
 
-const getAllProjects = async ()=>{
+const getAllProjects = async () => {
   try {
-    sqlQuery= `SELECT * FROM project`;
-    return await DB.pool.query(sqlQuery)
+    sqlQuery = `SELECT * FROM project`;
+    return await DB.pool.query(sqlQuery);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
+
+const getProjectById = async (id) => {
+  try {
+    sqlQuery = `SELECT * FROM project WHERE id=${id}`;
+    return await DB.pool.query(sqlQuery);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 module.exports.createProjectSchema = createProjectSchema;
 module.exports.getAllProjects = getAllProjects;
+module.exports.getProjectById = getProjectById;
