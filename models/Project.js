@@ -12,8 +12,8 @@ const createProjectSchema = async () => {
                 start_date DATE,
                 end_date DATE,
                 goal DECIMAL(12,2),
-                pledeged DECIMAL(12,2),
-                investors INT
+                pledged DECIMAL(12,2) DEFAULT 0,
+                investors INT DEFAULT 0
                 
             )
         `;
@@ -42,6 +42,16 @@ const getProjectById = async (id) => {
   }
 };
 
+const createNewProject = async (newProject) => {
+  try {
+    sqlQuery = `INSERT INTO project SET ?`;
+    return await DB.pool.query(sqlQuery, newProject);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports.createProjectSchema = createProjectSchema;
 module.exports.getAllProjects = getAllProjects;
 module.exports.getProjectById = getProjectById;
+module.exports.createNewProject = createNewProject;
