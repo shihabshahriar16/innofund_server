@@ -45,7 +45,7 @@ const getProjectById = async (id) => {
 const createNewProject = async (newProject) => {
   try {
     sqlQuery = `INSERT INTO project SET ?`;
-    return await DB.pool.query(sqlQuery, newProject);
+    await DB.pool.query(sqlQuery, newProject);
   } catch (error) {
     console.log(error);
   }

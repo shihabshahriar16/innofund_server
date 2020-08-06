@@ -2,11 +2,12 @@ const express = require('express');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
-const validateRegisterInput = require('../validation/register');
-const validateLoginInput = require('../validation/login');
 
 const Project = require('../models/Project');
+const Comment = require('../models/Comment');
+//const { post } = require('./users');
 
+const validateCommentInput = require('../validation/comment');
 //  @route GET api/project
 //  @desc get all projects
 //  @access public
@@ -79,4 +80,35 @@ router.post(
   }
 );
 
+//  @route POST api/project/comment/:id
+//  @desc comment on a project
+//  @access private
+router.post(
+  '/comment/:id',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+    const project = await Project.getProjectById(req.params.id);
+    if (!project[0].length) {
+      return res.status(400).json({ msg: 'no project found' });
+    }
+    const { errors, isValid } = validateCommentInput(req.body);
+    // Check validation
+    if (!isValid) {
+      return next(errors);
+    }
+
+    try {
+      let newComment = {
+        project_id: req.params.id,
+        user_account_id: req.user.id,
+        comment_text: req.body.comment_text,
+      };
+      await Comment.AddCommentToPost(newComment);
+      res.json({ msg: 'comment added' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('server error');
+    }
+  }
+);
 module.exports = router;
