@@ -1,4 +1,5 @@
 const DB = require('../config/connectDB');
+const util = require('util')
 
 const createCommentSchema = async () => {
   try {
@@ -29,8 +30,9 @@ const AddCommentToPost = async (newComment) => {
 
 const GetCommentById = async (commentId, projectId) => {
   try {
+    const query = util.promisify(DB.pool.query).bind(DB.pool);
     sqlQuery = `SELECT * FROM comment WHERE id=${commentId} AND project_id=${projectId}`;
-    return await DB.pool.query(sqlQuery);
+    return await query(sqlQuery);
   } catch (error) {
     console.error(error);
   }

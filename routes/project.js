@@ -79,6 +79,34 @@ router.post(
     }
   }
 );
+//  @route POST api/project/:id
+//  @desc delete a project
+//  @access private
+router.delete(
+  '/:id',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+    const project = await Project.getProjectById(req.params.id);
+    
+  
+    if (!project[0]) {
+      return res.status(400).json({ msg: 'no project found' });
+    }
+    
+   
+    if (req.user.id !== project[0].user_account_id) {
+      return res.status(401).json({ msg: 'user not authorized' });
+    }
+    try {
+      await Project.DeleteProjectById(req.params.id);
+      res.json({ msg: 'project deleted successfully' });
+    } catch (error) {
+      console.error(error)
+      res.status(500).send('server error');
+    }
+  }
+);
+
 
 //  @route POST api/project/comment/:id
 //  @desc comment on a project
@@ -123,9 +151,13 @@ router.delete(
       req.params.comment_id,
       req.params.id
     );
-    if (!comment[0].length) {
+    
+    if (!comment[0]) {
       return res.status(400).json({ msg: 'no comment found' });
     }
+   
+    
+ 
     if (req.user.id !== comment[0].user_account_id) {
       return res.status(401).json({ msg: 'user not authorized' });
     }
