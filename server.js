@@ -11,15 +11,21 @@ const UserSchema = require("./models/User")
 const users = require("./routes/users");
 require('./auth/auth');
 
+const ProjectSchema = require("./models/Project")
+const CommentSchema = require("./models/Comment")
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
 
 DB.testConnection()
 UserSchema.CreateUserSchema();
+ProjectSchema.createProjectSchema();
+CommentSchema.createCommentSchema();
 
 
 app.use('/api',users);
+app.use('/api/project',require('./routes/project'))
+
 
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);
