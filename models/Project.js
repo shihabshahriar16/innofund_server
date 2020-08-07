@@ -1,4 +1,5 @@
 const DB = require('../config/connectDB');
+const util = require('util');
 
 // organization_id INT FK,project_status_id INT FK - should we include them now?
 const createProjectSchema = async () => {
@@ -35,8 +36,9 @@ const getAllProjects = async () => {
 
 const getProjectById = async (id) => {
   try {
+    const query = util.promisify(DB.pool.query).bind(DB.pool);
     sqlQuery = `SELECT * FROM project WHERE id=${id}`;
-    return await DB.pool.query(sqlQuery);
+    return await query(sqlQuery);
   } catch (error) {
     console.log(error);
   }
@@ -51,7 +53,16 @@ const createNewProject = async (newProject) => {
   }
 };
 
+const DeleteProjectById = async (projectId) => {
+  try {
+    sqlQuery = `DELETE FROM project WHERE id=${projectId}`;
+    await DB.pool.query(sqlQuery);
+  } catch (error) {
+    console.error(error);
+  }
+};
 module.exports.createProjectSchema = createProjectSchema;
 module.exports.getAllProjects = getAllProjects;
 module.exports.getProjectById = getProjectById;
 module.exports.createNewProject = createNewProject;
+module.exports.DeleteProjectById = DeleteProjectById;
