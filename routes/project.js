@@ -111,4 +111,31 @@ router.post(
     }
   }
 );
+
+//  @route POST api/project/comment/:id
+//  @desc delete a comment on a project
+//  @access private
+router.delete(
+  '/comment/:id/:comment_id',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+    const comment = await Comment.GetCommentById(
+      req.params.comment_id,
+      req.params.id
+    );
+    if (!comment[0].length) {
+      return res.status(400).json({ msg: 'no comment found' });
+    }
+    if (req.user.id !== comment[0].user_account_id) {
+      return res.status(401).json({ msg: 'user not authorized' });
+    }
+    try {
+      await Comment.DeleteCommentById(req.params.comment_id, req.params.id);
+      res.json({ msg: 'comment deleted successfully' });
+    } catch (error) {
+      res.status(500).send('server error');
+    }
+  }
+);
+
 module.exports = router;
