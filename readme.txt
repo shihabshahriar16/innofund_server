@@ -30,3 +30,16 @@ CREATE DATABASE innofunddb;
 
 https://codeforgeek.com/nodejs-mysql-tutorial/
 
+
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/shihabshahriar16/innofund_server.git
+git push -u origin master
+
+
+
+remote mysql hosting
+
+https://remotemysql.com
+
