@@ -70,7 +70,7 @@ const ExtractJWT = require('passport-jwt').ExtractJwt;
 passport.use('jwt', new JWTstrategy({
     //secret we used to sign our JWT
     secretOrKey: process.env.secretOrKey,
-    //we expect the user to send the token as a query parameter with the name 'secret_token'
+    //we expect the user to send the token as a header with key authorization
     jwtFromRequest: ExtractJWT.fromHeader('authorization')
 }, async (token, done) => {
     try {

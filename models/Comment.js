@@ -1,4 +1,5 @@
 const DB = require('../config/connectDB');
+const util = require('util')
 
 const createCommentSchema = async () => {
   try {
@@ -21,11 +22,33 @@ const AddCommentToPost = async (newComment) => {
   try {
     sqlQuery = `INSERT INTO comment SET ?`;
 
-    return await DB.pool.query(sqlQuery,newComment);
+    return await DB.pool.query(sqlQuery, newComment);
   } catch (error) {
     console.log(error);
   }
 };
 
+const GetCommentById = async (commentId, projectId) => {
+  try {
+    const query = util.promisify(DB.pool.query).bind(DB.pool);
+    sqlQuery = `SELECT * FROM comment WHERE id=${commentId} AND project_id=${projectId}`;
+    return await query(sqlQuery);
+  } catch (error) {
+    console.error(error);
+  }
+};
+const DeleteCommentById = async (commentId, projectId) => {
+  try {
+    sqlQuery = `DELETE FROM comment WHERE id=${commentId} AND project_id=${projectId}`;
+    await DB.pool.query(sqlQuery);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
+
 module.exports.createCommentSchema = createCommentSchema;
-module.exports.AddCommentToPost = AddCommentToPost
+module.exports.AddCommentToPost = AddCommentToPost;
+module.exports.GetCommentById = GetCommentById;
+module.exports.DeleteCommentById = DeleteCommentById;
