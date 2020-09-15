@@ -46,13 +46,13 @@ const getProjectById = async (id) => {
   }
 };
 
-const createNewProject = async (newProject,next) => {
+const createNewProject = async (newProject, next) => {
   try {
     sqlQuery = `INSERT INTO project SET ?`;
     await DB.pool.query(sqlQuery, newProject);
   } catch (error) {
     console.log(error);
-    next(error)
+    next(error);
   }
 };
 
@@ -64,8 +64,19 @@ const DeleteProjectById = async (projectId) => {
     console.error(error);
   }
 };
+
+const getProjectsByUserId = async (userId) => {
+  try {
+    const query = util.promisify(DB.pool.query).bind(DB.pool);
+    sqlQuery = `SELECT * FROM project WHERE created_by_id='${userId}'`;
+    return await query(sqlQuery);
+  } catch (error) {
+    console.error(error);
+  }
+};
 module.exports.createProjectSchema = createProjectSchema;
 module.exports.getAllProjects = getAllProjects;
 module.exports.getProjectById = getProjectById;
 module.exports.createNewProject = createNewProject;
 module.exports.DeleteProjectById = DeleteProjectById;
+module.exports.getProjectsByUserId = getProjectsByUserId;
