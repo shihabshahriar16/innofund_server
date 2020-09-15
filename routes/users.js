@@ -2,13 +2,6 @@ const express = require('express');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
-// const SSLCommerz = require('sslcommerz-nodejs');
-// let sslsettings = {
-//     isSandboxMode: true, //false if live version
-//     store_id: "",
-//     store_passwd: ""
-// }
-
 const router = express.Router();
 const validateRegisterInput = require('../validation/register');
 const validateLoginInput = require('../validation/login'); // Load User model

@@ -20,5 +20,17 @@ const CreateUserSchema = async () => {
     }
 }
 
+const getUserById = async (id) => {
+    try {
+      const query = util.promisify(DB.pool.query).bind(DB.pool);
+      sqlQuery = `SELECT * FROM user WHERE id=${id}`;
+      return await query(sqlQuery);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+
 
 module.exports.CreateUserSchema = CreateUserSchema
+module.exports.getUserById = getUserById;
