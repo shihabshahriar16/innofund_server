@@ -170,7 +170,7 @@ router.get(
       if (!myprojects[0]) {
         return res.status(400).json({ msg: 'you do not have any projects' });
       }
-      res.json(myprojects[0]);
+      res.json(myprojects);
     } catch (error) {
       res.status(500).send('server error');
     }
