@@ -2,6 +2,7 @@ const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 const DB = require('../config/connectDB')
+const { v4: uuidv4 } = require('uuid');
 
 
 //Create a passport middleware to handle user registration
@@ -20,6 +21,7 @@ passport.use('register', new localStrategy({
       const hash = await bcrypt.hash(password, 10);
       password = hash;
         const sqlData = {
+            id: uuidv4(),
             name: name,
             email: email,
             password: password,
@@ -70,7 +72,7 @@ const ExtractJWT = require('passport-jwt').ExtractJwt;
 passport.use('jwt', new JWTstrategy({
     //secret we used to sign our JWT
     secretOrKey: process.env.secretOrKey,
-    //we expect the user to send the token as a query parameter with the name 'secret_token'
+    //we expect the user to send the token as a header with key authorization
     jwtFromRequest: ExtractJWT.fromHeader('authorization')
 }, async (token, done) => {
     try {

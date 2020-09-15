@@ -1,7 +1,9 @@
 const express = require('express');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
+const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
+
 
 const Project = require('../models/Project');
 const Comment = require('../models/Comment');
@@ -48,31 +50,20 @@ router.post(
   passport.authenticate('jwt', { session: false }),
   async (req, res, next) => {
     try {
-      let {
-        project_name,
-        project_description,
-        project_location,
-        start_date,
-        end_date,
-        goal,
-      } = req.body;
-
-      start_date = new Date(start_date);
-      end_date = new Date(end_date);
-
-      const user_account_id = req.user.id;
-
       let newProject = {
-        project_name,
-        user_account_id,
-        project_description,
-        project_location,
-        start_date,
-        end_date,
-        goal,
+        id: uuidv4(),
+        created_by_id:req.user.id,
+        project_name:req.body.project_name,
+        project_type:req.body.project_type,
+        project_description:req.body.project_description,
+        start_date:new Date(req.body.start_date),
+        end_date:new Date(req.body.end_date),
+        goal:req.body.goal,
+        //project_status_id:uuidv4(),
+        //project_video_url:req.body.project_video_url
       };
 
-      await Project.createNewProject(newProject);
+      await Project.createNewProject(newProject,next);
       res.json({ msg: 'created a new project' });
     } catch (error) {
       console.log(error.message);
