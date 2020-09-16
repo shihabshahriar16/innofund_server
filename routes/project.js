@@ -7,6 +7,7 @@ const router = express.Router();
 const Project = require('../models/Project');
 const UserSchema = require('../models/User');
 const Comment = require('../models/Comment');
+const Faq = require('../models/Faq');
 
 
 const SSLCommerz = require('sslcommerz-nodejs');
@@ -94,7 +95,7 @@ router.delete(
             return res.status(400).json({ msg: 'no project found' });
         }
 
-        if (req.user.id !== project[0].user_account_id) {
+        if (req.user.id !== project[0].created_by_id) {
             return res.status(401).json({ msg: 'user not authorized' });
         }
         try {
@@ -248,5 +249,45 @@ router.post('/ipn_listener', async (req, res) => {
     }
 })
 
+//  @route POST api/project/faq
+//  @desc post an FAQ
+//  @access private
+router.post(
+    '/faq',
+    passport.authenticate('jwt', { session: false }),
+    async (req, res, next) => {
+        
+        // if (!project[0]) {
+        //     return res.status(400).json({ msg: 'no project found' });
+        // }
+        //const { errors, isValid } = validateCommentInput(req.body);
+        // Check validation
+        // if (!isValid) {
+        //     return next(errors);
+        // }
+        const project = await Project.getProjectById(req.body.project_id);
+
+        if (!project[0]) {
+            return res.status(400).json({ msg: 'no project found' });
+        }
+
+        if (req.user.id !== project[0].created_by_id) {
+            return res.status(401).json({ msg: 'user not authorized' });
+        }
+        try {
+            //let
+            const newFaqEntry = {
+                id: req.body.project_id,
+                question: req.body.question,
+                answer:req.body.answer
+            };
+            await Faq.AddNewFaq(newFaqEntry)
+            res.json({ msg: 'faq added' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('server error');
+        }
+    }
+);
 
 module.exports = router;

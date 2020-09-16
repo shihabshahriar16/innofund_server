@@ -17,4 +17,15 @@ const createFaqSchema = async () => {
   }
 };
 
+const AddNewFaq = async (newFaqEntry) => {
+    try {
+      sqlQuery = `INSERT INTO faq SET ?`;
+  
+      await DB.pool.query(sqlQuery, newFaqEntry);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 module.exports.createFaqSchema = createFaqSchema;
+module.exports.AddNewFaq = AddNewFaq;
