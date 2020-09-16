@@ -27,5 +27,15 @@ const AddNewFaq = async (newFaqEntry) => {
     }
   };
 
+  const GetAllFAQEntries = async () => {
+    try {
+      sqlQuery = `SELECT * FROM faq`;
+      return await DB.pool.query(sqlQuery);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 module.exports.createFaqSchema = createFaqSchema;
 module.exports.AddNewFaq = AddNewFaq;
+module.exports.GetAllFAQEntries = GetAllFAQEntries;

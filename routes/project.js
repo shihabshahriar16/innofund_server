@@ -256,15 +256,6 @@ router.post(
     '/faq',
     passport.authenticate('jwt', { session: false }),
     async (req, res, next) => {
-        
-        // if (!project[0]) {
-        //     return res.status(400).json({ msg: 'no project found' });
-        // }
-        //const { errors, isValid } = validateCommentInput(req.body);
-        // Check validation
-        // if (!isValid) {
-        //     return next(errors);
-        // }
         const project = await Project.getProjectById(req.body.project_id);
 
         if (!project[0]) {
@@ -275,7 +266,7 @@ router.post(
             return res.status(401).json({ msg: 'user not authorized' });
         }
         try {
-            //let
+         
             const newFaqEntry = {
                 id: req.body.project_id,
                 question: req.body.question,
@@ -289,5 +280,18 @@ router.post(
         }
     }
 );
+
+//  @route POST api/project/faq
+//  @desc get all FAQ entries
+//  @access public
+
+router.get('/faq/all',async(req,res)=>{
+    try {
+        const FAQs = await Faq.GetAllFAQEntries();
+        res.json(FAQs[0]);
+    } catch (error) {
+        res.status(500).send('server error');
+    }
+})
 
 module.exports = router;
