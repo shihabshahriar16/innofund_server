@@ -13,6 +13,8 @@ require('./auth/auth');
 
 const ProjectSchema = require("./models/Project")
 const CommentSchema = require("./models/Comment")
+const InvestmentOptionSchema = require("./models/InvestmentOption")
+const ProjectInvestorSchema = require("./models/ProjectInvestor")
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
@@ -21,6 +23,8 @@ DB.testConnection()
 UserSchema.CreateUserSchema();
 ProjectSchema.createProjectSchema();
 CommentSchema.createCommentSchema();
+InvestmentOptionSchema.createInvestmentOptionSchema();
+ProjectInvestorSchema.createProjectInvestorSchema();
 
 
 app.use('/api',users);
