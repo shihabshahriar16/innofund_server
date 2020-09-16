@@ -13,6 +13,7 @@ require('./auth/auth');
 
 const ProjectSchema = require("./models/Project")
 const CommentSchema = require("./models/Comment")
+const FaqSchema = require("./models/Faq")
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
@@ -21,6 +22,7 @@ DB.testConnection()
 UserSchema.CreateUserSchema();
 ProjectSchema.createProjectSchema();
 CommentSchema.createCommentSchema();
+FaqSchema.createFaqSchema();
 
 
 app.use('/api',users);
