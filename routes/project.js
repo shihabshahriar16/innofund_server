@@ -187,10 +187,14 @@ router.get(
     }
 );
 
-router.post('/pledge/:id/:projectid', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
+router.post('/pledge/:projectid/:amount', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
     try {
-        let targetUser = await UserSchema.getUserById(req.params.id);
+        //console.log(req.user.id);
+        //console.log(req.params.projectid)
+        let targetUser = await UserSchema.getUserById(req.user.id);
         let targetProject = await Project.getProjectById(req.params.projectid);
+        //console.log(targetProject[0])
+        console.log(req.headers.origin)
         let sslcommerz = new SSLCommerz(sslsettings);
         let post_body = {};
         post_body['total_amount'] = req.params.amount;

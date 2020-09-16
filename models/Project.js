@@ -39,7 +39,7 @@ const getAllProjects = async () => {
 const getProjectById = async (id) => {
   try {
     const query = util.promisify(DB.pool.query).bind(DB.pool);
-    sqlQuery = `SELECT * FROM project WHERE id=${id}`;
+    sqlQuery = `SELECT * FROM project WHERE id='${id}'`;
     return await query(sqlQuery);
   } catch (error) {
     console.log(error);

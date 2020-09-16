@@ -1,5 +1,5 @@
 const DB = require('../config/connectDB')
-
+const util = require('util');
 
 const CreateUserSchema = async () => {
     try {
@@ -22,8 +22,9 @@ const CreateUserSchema = async () => {
 
 const getUserById = async (id) => {
     try {
+    console.log(id)
       const query = util.promisify(DB.pool.query).bind(DB.pool);
-      sqlQuery = `SELECT * FROM user WHERE id=${id}`;
+      sqlQuery = `SELECT * FROM user WHERE id='${id}'`;
       return await query(sqlQuery);
     } catch (error) {
       console.log(error);
