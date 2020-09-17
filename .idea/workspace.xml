@@ -20,10 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee4c104c-c72e-4cd2-9fa7-26a56aa987b7" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/innofund_server.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/Project.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/Project.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/ProjectInvestor.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/ProjectInvestor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/User.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/User.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +58,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1600287408248</updated>
-      <workItem from="1600287412753" duration="11273000" />
+      <workItem from="1600287412753" duration="14036000" />
     </task>
     <servers />
   </component>

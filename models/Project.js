@@ -6,6 +6,7 @@ const util = require('util');
 const createProjectSchema = async () => {
   try {
     sqlQuery = `CREATE TABLE IF NOT EXISTS project(
+                serialNo INT,
                 id VARCHAR(255) PRIMARY KEY,
                 created_by_id VARCHAR(255) REFERENCES user(id),
                 project_name VARCHAR(255),  
@@ -23,6 +24,86 @@ const createProjectSchema = async () => {
 
     await DB.pool.query(sqlQuery);
   } catch (error) {
+    console.log(error);
+  }
+};
+
+const GenerateProjectSerialNo = async () => {
+  try {
+    sqlQuery = `DROP FUNCTION IF EXISTS GenerateProjectSerialNo;
+                    CREATE FUNCTION GenerateProjectSerialNo()
+                    RETURNS INT
+                    DETERMINISTIC
+                    BEGIN
+                    DECLARE XXX INT;
+                    DECLARE DATE INT;
+                    
+                    SET DATE = CURRENT_DATE();
+                    SET DATE = SUBSTR(DATE,3,6);
+                    SELECT MAX(serialNo) INTO XXX FROM project WHERE id LIKE CONCAT(DATE, '%');
+                    IF (XXX IS NULL) THEN
+                        SET XXX=0;
+                    END IF;
+                    SET XXX=XXX+1;
+                    RETURN XXX;
+                    END
+                    `;
+
+    await DB.pool.query(sqlQuery);
+  }
+  catch (error) {
+    console.log(error);
+  }
+};
+
+const GenerateProjectID = async () => {
+  try {
+    sqlQuery = `DROP FUNCTION IF EXISTS GenerateProjectID;
+                    CREATE FUNCTION GenerateUserID()
+                    RETURNS VARCHAR(255)
+                    DETERMINISTIC
+                    BEGIN
+                    DECLARE ID VARCHAR(255);
+                    DECLARE DATE INT;
+                    DECLARE XXX INT;
+                    
+                    SET DATE=CURRENT_DATE();
+                    SET DATE=SUBSTR(DATE,3,6);
+                    SELECT MAX(serialNo) into XXX from project WHERE id LIKE CONCAT(DATE, '%');
+                    IF (XXX IS NULL) THEN
+                        SET XXX = 0;
+                    END IF;
+                    
+                    SET XXX = XXX+1;
+                    
+                    SET ID = DATE;
+                    SET ID = CONCAT(ID, LPAD(XXX, 3, '0'));
+                    RETURN ID;
+                    END
+                    `;
+
+    await DB.pool.query(sqlQuery);
+  }
+  catch (error) {
+    console.log(error);
+  }
+};
+
+const updateProjectID = async () => {
+  try {
+    sqlQuery = `DROP TRIGGER IF EXISTS updateProjectID;
+                    CREATE TRIGGER updateProjectID 
+                    BEFORE INSERT ON user
+                    FOR EACH ROW
+                    BEGIN
+                    SET NEW.id = GenerateProjectID();
+                    SET NEW.serialNo = GenerateProjectSerialNo();  
+                    END; 
+                `;
+
+    await DB.pool.query(sqlQuery);
+  }
+  catch (error) {
     console.log(error);
   }
 };
@@ -80,3 +161,6 @@ module.exports.getProjectById = getProjectById;
 module.exports.createNewProject = createNewProject;
 module.exports.DeleteProjectById = DeleteProjectById;
 module.exports.getProjectsByUserId = getProjectsByUserId;
+module.exports.GenerateProjectID = GenerateProjectID();
+module.exports.GenerateProjectSerialNo = GenerateProjectSerialNo();
+module.exports.updateProjectID = updateProjectID();
