@@ -101,6 +101,38 @@ const updateUserID = async () => {
     }
 };
 
+const createFuncCalculateTotalInvestment = async () => {
+    try {
+        sqlQuery = `DROP FUNCTION IF EXISTS calculateTotalInvestment;
+            CREATE FUNCTION
+            calculateTotalInvestment(investor VARCHAR(255))
+            RETURNS DECIMAL(12,2)
+            DETERMINISTIC
+            BEGIN
+            DECLARE total_investment DECIMAL (12,2) DEFAULT 0.00;
+            SELECT SUM(pledged) INTO total_investment FROM project_investor
+            WHERE user_id = investor;
+            RETURN total_investment;
+            END
+          `;
+
+        await DB.pool.query(sqlQuery);
+    }
+    catch (error) {
+        console.log(error);
+    }
+};
+
+const calculateTotalInvestment = async (investor) => {
+    try {
+        sqlQuery = `calculateTotalInvestment('${investor}')`;
+        return await DB.pool.query(sqlQuery);
+    }
+    catch (error) {
+        console.log(error);
+    }
+};
+
 const getUserById = async (id) => {
     try {
     console.log(id)
@@ -113,7 +145,9 @@ const getUserById = async (id) => {
   };
 
 module.exports.CreateUserSchema = CreateUserSchema;
-module.exports.GenerateUserID = GenerateUserID();
-module.exports.GenerateUserSerialNo = GenerateUserSerialNo();
-module.exports.updateUserID = updateUserID();
+module.exports.GenerateUserID = GenerateUserID;
+module.exports.GenerateUserSerialNo = GenerateUserSerialNo;
+module.exports.updateUserID = updateUserID;
+module.exports.createFuncCalculateTotalInvestment = createFuncCalculateTotalInvestment;
+module.exports.calculateTotalInvestment = calculateTotalInvestment;
 module.exports.getUserById = getUserById;
