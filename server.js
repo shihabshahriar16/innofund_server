@@ -27,6 +27,8 @@ CommentSchema.createCommentSchema();
 InvestmentOptionSchema.createInvestmentOptionSchema();
 ProjectInvestorSchema.createProjectInvestorSchema();
 ProjectInvestorSchema.UpdatePledgeTrigger();
+ProjectInvestorSchema.calculateInvestmentOption();
+ProjectInvestorSchema.updateInvestmentOption();
 FaqSchema.createFaqSchema();
 
 
