@@ -8,6 +8,7 @@ const Project = require('../models/Project');
 const UserSchema = require('../models/User');
 const Comment = require('../models/Comment');
 const Faq = require('../models/Faq');
+const ProjectInvestor = require('../models/ProjectInvestor')
 
 
 const SSLCommerz = require('sslcommerz-nodejs');
@@ -228,6 +229,7 @@ router.post('/pledge/:projectid/:amount', passport.authenticate('jwt', { session
             res.json({ status: 'fail', data: null, logo: transaction.storeLogo, message: "JSON Data parsing error!" })
         }
     } catch (error) {
+        console.log(error)
         res.status(500).send('server error');
     }
 })
@@ -236,14 +238,17 @@ router.post('/ipn_listener', async (req, res) => {
     try {
         let sslcommerz = new SSLCommerz(sslsettings);
         const validation = await sslcommerz.validate_transaction_order(req.body.val_id)
-        //console.log(validation)
+        console.log(validation)
         if (validation.status === "VALID") {
-            const participants = {
-                id: validation.value_a,
-                transaction: validation.tran_id
+            const projectInvestment = {
+                id:uuidv4(),
+                project_id: validation.value_b,
+                user_id: validation.value_a,
+                amount: validation.amount,
+                trans_id: validation.tran_id
             }
-            //update project with pledge participant and amount
-            res.json({ message: 'Successfully registered', success: true })
+            await ProjectInvestor.newInvestment(projectInvestment)
+            res.json({ message: 'Successfully Pledged', success: true })
         }
     }
     catch (err) {

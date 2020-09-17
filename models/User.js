@@ -4,7 +4,6 @@ const util = require('util');
 const CreateUserSchema = async () => {
     try {
         sqlQuery = `CREATE TABLE IF NOT EXISTS user(
-                    serialNo INT,
                     id VARCHAR(255) PRIMARY KEY,
                     name VARCHAR(255),
                     email VARCHAR(255) UNIQUE,
@@ -31,18 +30,14 @@ const CreateFuncGenerateUserID = async () => {
                     DECLARE ID VARCHAR(255);
                     DECLARE DATE INT;
                     DECLARE XXX INT;
-                    
                     SET DATE=CURRENT_DATE();
-                    SET DATE=SUBSTR(DATE,3,6);
-                    SELECT COUNT(id) into XXX from user WHERE id LIKE CONCAT(DATE, '%');
+                    SELECT COUNT(*) into XXX from user;
                     IF (XXX IS NULL) THEN
                         SET XXX = 0;
                     END IF;
-                    
                     SET XXX = XXX+1;
-                    
                     SET ID = DATE;
-                    SET ID = CONCAT(ID, LPAD(XXX, 3, '0'));
+                    SET ID = CONCAT(ID, LPAD(XXX,5,'0'));
                     RETURN ID;
                     END
                     `;
