@@ -111,6 +111,7 @@ router.delete(
 //  @route POST api/project/comment/:id
 //  @desc comment on a project
 //  @access private
+/*
 router.post(
     '/comment/:id',
     passport.authenticate('jwt', { session: false }),
@@ -138,11 +139,12 @@ router.post(
             res.status(500).send('server error');
         }
     }
-);
+); */
 
 //  @route POST api/project/comment/:id
 //  @desc delete a comment on a project
 //  @access private
+/*
 router.delete(
     '/comment/:id/:comment_id',
     passport.authenticate('jwt', { session: false }),
@@ -167,6 +169,7 @@ router.delete(
         }
     }
 );
+*/
 
 //  @route GET api/project/myprojects
 //  @desc get user's projects
@@ -294,4 +297,31 @@ router.get('/faq/all',async(req,res)=>{
     }
 })
 
+//  @route POST api/project/comment
+//  @desc post a comment
+//  @access private
+router.post('/comment',
+    passport.authenticate('jwt',{session:false}),
+    async (req,res,next) =>{
+        const project = await Project.getProjectById(req.body.project_id);
+
+        if (!project[0]) {
+            return res.status(400).json({ msg: 'no project found' });
+        }
+
+        try {
+            const newComment = {
+                id: req.body.project_id,
+                user_id:req.body.user_id,
+                comment:req.body.comment,
+                time_stamp:req.body.timestamp
+            }
+            await Comment.AddComment(newComment)
+            res.json({msg:'comment added'})
+        } catch (error) {
+            console.error(error)
+            res.status(500).send('server error')
+        }
+    }
+)
 module.exports = router;
