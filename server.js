@@ -22,6 +22,7 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
 
 DB.testConnection()
 UserSchema.CreateUserSchema();
+UserSchema.createFuncCalculateTotalInvestment();
 ProjectSchema.createProjectSchema();
 CommentSchema.createCommentSchema();
 InvestmentOptionSchema.createInvestmentOptionSchema();
