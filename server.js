@@ -15,6 +15,7 @@ const ProjectSchema = require("./models/Project")
 const CommentSchema = require("./models/Comment")
 const InvestmentOptionSchema = require("./models/InvestmentOption")
 const ProjectInvestorSchema = require("./models/ProjectInvestor")
+const FaqSchema = require("./models/Faq")
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
@@ -26,6 +27,7 @@ CommentSchema.createCommentSchema();
 InvestmentOptionSchema.createInvestmentOptionSchema();
 ProjectInvestorSchema.createProjectInvestorSchema();
 ProjectInvestorSchema.UpdatePledgeTrigger();
+FaqSchema.createFaqSchema();
 
 
 app.use('/api',users);
