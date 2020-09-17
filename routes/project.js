@@ -284,7 +284,7 @@ router.post(
     }
 );
 
-//  @route POST api/project/faq
+//  @route GET api/project/faq
 //  @desc get all FAQ entries
 //  @access public
 
@@ -324,4 +324,17 @@ router.post('/comment',
         }
     }
 )
+
+//  @route GET api/project/faq
+//  @desc get all comments
+//  @access public
+
+router.get('/comment/all',async(req,res)=>{
+    try {
+        const comments = await Comment.GetAllCommentEntries();
+        res.json(comments[0]);
+    } catch (error) {
+        res.status(500).send('server error');
+    }
+})
 module.exports = router;

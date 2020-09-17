@@ -25,6 +25,15 @@ const AddComment = async (newComment) =>{
     console.error(error);
   }
 }
+
+const GetAllCommentEntries = async () => {
+  try {
+    sqlQuery = `SELECT * FROM comment`;
+    return await DB.pool.query(sqlQuery);
+  } catch (error) {
+    console.log(error);
+  }
+};
 // const AddCommentToPost = async (newComment) => {
 //   try {
 //     sqlQuery = `INSERT INTO comment SET ?`;
@@ -57,6 +66,7 @@ const AddComment = async (newComment) =>{
 
 module.exports.createCommentSchema = createCommentSchema;
 module.exports.AddComment = AddComment;
+module.exports.GetAllCommentEntries = GetAllCommentEntries;
 // module.exports.AddCommentToPost = AddCommentToPost;
 // module.exports.GetCommentById = GetCommentById;
 // module.exports.DeleteCommentById = DeleteCommentById;
