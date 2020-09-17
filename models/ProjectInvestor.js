@@ -114,7 +114,8 @@ const updateInvestmentOption = async () => {
           `;
 
         await DB.pool.query(sqlQuery);
-    } catch (error) {
+    }
+    catch (error) {
         console.log(error);
     }
 };
