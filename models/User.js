@@ -30,18 +30,14 @@ const CreateFuncGenerateUserID = async () => {
                     DECLARE ID VARCHAR(255);
                     DECLARE DATE INT;
                     DECLARE XXX INT;
-                    
                     SET DATE=CURRENT_DATE();
-                    SET DATE=SUBSTR(DATE,3,6);
-                    SELECT COUNT(id) into XXX from user WHERE id LIKE CONCAT(DATE, '%');
+                    SELECT COUNT(*) into XXX from user;
                     IF (XXX IS NULL) THEN
                         SET XXX = 0;
                     END IF;
-                    
                     SET XXX = XXX+1;
-                    
                     SET ID = DATE;
-                    SET ID = CONCAT(ID, LPAD(XXX, 3, '0'));
+                    SET ID = CONCAT(ID, LPAD(XXX,5,'0'));
                     RETURN ID;
                     END
                     `;
@@ -114,9 +110,19 @@ const getUserById = async (id) => {
     }
   };
 
+const updateProfile = async (updatedInfo,id) =>{
+    try {
+       sqlQuery = `UPDATE user SET ? WHERE id='${id}'`;
+       await DB.pool.query(sqlQuery, updatedInfo); 
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
 module.exports.CreateUserSchema = CreateUserSchema;
 module.exports.CreateFuncGenerateUserID = CreateFuncGenerateUserID;
 module.exports.CreateTrigUpdateUserID = CreateTrigUpdateUserID;
 module.exports.createFuncCalculateTotalInvestment = createFuncCalculateTotalInvestment;
 module.exports.calculateTotalInvestment = calculateTotalInvestment;
 module.exports.getUserById = getUserById;
+module.exports.updateProfile = updateProfile;

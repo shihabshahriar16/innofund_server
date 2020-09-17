@@ -39,16 +39,13 @@ const CreateFuncGenerateProjectID = async () => {
                     DECLARE XXX INT;
                     
                     SET DATE=CURRENT_DATE();
-                    SET DATE=SUBSTR(DATE,3,6);
-                    SELECT COUNT(id) into XXX from project WHERE id LIKE CONCAT(DATE, '%');
+                    SELECT COUNT(*) into XXX from project;
                     IF (XXX IS NULL) THEN
                         SET XXX = 0;
                     END IF;
-                    
                     SET XXX = XXX+1;
-                    
                     SET ID = DATE;
-                    SET ID = CONCAT(ID, LPAD(XXX, 3, '0'));
+                    SET ID = CONCAT(ID, LPAD(XXX, 5, '0'));
                     RETURN ID;
                     END
                     `;

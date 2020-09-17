@@ -10,6 +10,7 @@ const createProjectInvestorSchema = async () => {
                   user_id VARCHAR(255) REFERENCES user(id),  
                   investment_option VARCHAR(255) REFERENCES investment_option(id),
                   amount DECIMAL(12,2),
+                  trans_id VARCHAR(255),
                   pledgedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP  
               )
           `;
@@ -104,8 +105,17 @@ const CreateFuncCalculateInvestmentOption = async () => {
 };
 
 
+const newInvestment = async (investment) => {
+    try {
+      sqlQuery = `INSERT INTO project SET ?`;
+      await DB.pool.query(sqlQuery, investment);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
 module.exports.createProjectInvestorSchema = createProjectInvestorSchema;
 module.exports.CreateUpdatePledgeAndOptionTrigger = CreateUpdatePledgeAndOptionTrigger;
 module.exports.createProjectInvestorSchema = createProjectInvestorSchema;
 module.exports.CreateFuncCalculateInvestmentOption = CreateFuncCalculateInvestmentOption;
+module.exports.newInvestment = newInvestment;

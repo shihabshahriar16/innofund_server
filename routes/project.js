@@ -8,7 +8,7 @@ const Project = require('../models/Project');
 const UserSchema = require('../models/User');
 const Comment = require('../models/Comment');
 const Faq = require('../models/Faq');
-const ProfitScheme = require('../models/InvestmentOption');
+const ProjectInvestor = require('../models/ProjectInvestor')
 
 
 const SSLCommerz = require('sslcommerz-nodejs');
@@ -112,6 +112,7 @@ router.delete(
 //  @route POST api/project/comment/:id
 //  @desc comment on a project
 //  @access private
+/*
 router.post(
     '/comment/:id',
     passport.authenticate('jwt', { session: false }),
@@ -139,11 +140,12 @@ router.post(
             res.status(500).send('server error');
         }
     }
-);
+); */
 
 //  @route POST api/project/comment/:id
 //  @desc delete a comment on a project
 //  @access private
+/*
 router.delete(
     '/comment/:id/:comment_id',
     passport.authenticate('jwt', { session: false }),
@@ -168,6 +170,7 @@ router.delete(
         }
     }
 );
+*/
 
 //  @route GET api/project/myprojects
 //  @desc get user's projects
@@ -226,6 +229,7 @@ router.post('/pledge/:projectid/:amount', passport.authenticate('jwt', { session
             res.json({ status: 'fail', data: null, logo: transaction.storeLogo, message: "JSON Data parsing error!" })
         }
     } catch (error) {
+        console.log(error)
         res.status(500).send('server error');
     }
 })
@@ -234,14 +238,17 @@ router.post('/ipn_listener', async (req, res) => {
     try {
         let sslcommerz = new SSLCommerz(sslsettings);
         const validation = await sslcommerz.validate_transaction_order(req.body.val_id)
-        //console.log(validation)
+        console.log(validation)
         if (validation.status === "VALID") {
-            const participants = {
-                id: validation.value_a,
-                transaction: validation.tran_id
+            const projectInvestment = {
+                id:uuidv4(),
+                project_id: validation.value_b,
+                user_id: validation.value_a,
+                amount: validation.amount,
+                trans_id: validation.tran_id
             }
-            //update project with pledge participant and amount
-            res.json({ message: 'Successfully registered', success: true })
+            await ProjectInvestor.newInvestment(projectInvestment)
+            res.json({ message: 'Successfully Pledged', success: true })
         }
     }
     catch (err) {
@@ -282,7 +289,7 @@ router.post(
     }
 );
 
-//  @route POST api/project/faq
+//  @route GET api/project/faq
 //  @desc get all FAQ entries
 //  @access public
 
@@ -295,49 +302,44 @@ router.get('/faq/all',async(req,res)=>{
     }
 })
 
-//  @route POST api/project/profit_scheme
-//  @desc post an ProfitScheme
+//  @route POST api/project/comment
+//  @desc post a comment
 //  @access private
-router.post(
-    '/profit_scheme',
-    passport.authenticate('jwt', { session: false }),
-    async (req, res, next) => {
+router.post('/comment',
+    passport.authenticate('jwt',{session:false}),
+    async (req,res,next) =>{
         const project = await Project.getProjectById(req.body.project_id);
 
         if (!project[0]) {
             return res.status(400).json({ msg: 'no project found' });
         }
 
-        if (req.user.id !== project[0].created_by_id) {
-            return res.status(401).json({ msg: 'user not authorized' });
-        }
         try {
-
-            const newProfitSchemeEntry = {
-                project_id: req.body.project_id,
-                id: req.body.question,
-                min_pledge:req.body.answer
-            };
-            await Faq.AddNewFaq(newFaqEntry)
-            res.json({ msg: 'faq added' });
+            const newComment = {
+                id: req.body.project_id,
+                user_id:req.body.user_id,
+                comment:req.body.comment,
+                time_stamp:req.body.timestamp
+            }
+            await Comment.AddComment(newComment)
+            res.json({msg:'comment added'})
         } catch (error) {
-            console.error(error);
-            res.status(500).send('server error');
+            console.error(error)
+            res.status(500).send('server error')
         }
     }
-);
+)
 
-//  @route POST api/project/faq
-//  @desc get all FAQ entries
+//  @route GET api/project/faq
+//  @desc get all comments
 //  @access public
 
-router.get('/faq/all',async(req,res)=>{
+router.get('/comment/all',async(req,res)=>{
     try {
-        const FAQs = await Faq.GetAllFAQEntries();
-        res.json(FAQs[0]);
+        const comments = await Comment.GetAllCommentEntries();
+        res.json(comments[0]);
     } catch (error) {
         res.status(500).send('server error');
     }
 })
-
 module.exports = router;

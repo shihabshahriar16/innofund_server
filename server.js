@@ -38,6 +38,7 @@ ProjectSchema.CreateTrigUpdateProjectID();
 
 app.use('/api',users);
 app.use('/api/project',require('./routes/project'))
+app.use('/api/profile',require('./routes/profile'))
 
 
 app.use(function (err, req, res, next) {
