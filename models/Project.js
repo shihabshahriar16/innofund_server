@@ -6,7 +6,6 @@ const util = require('util');
 const createProjectSchema = async () => {
   try {
     sqlQuery = `CREATE TABLE IF NOT EXISTS project(
-                serialNo INT,
                 id VARCHAR(255) PRIMARY KEY,
                 created_by_id VARCHAR(255) REFERENCES user(id),
                 project_name VARCHAR(255),  
@@ -28,38 +27,10 @@ const createProjectSchema = async () => {
   }
 };
 
-const GenerateProjectSerialNo = async () => {
-  try {
-    sqlQuery = `DROP FUNCTION IF EXISTS GenerateProjectSerialNo;
-                    CREATE FUNCTION GenerateProjectSerialNo()
-                    RETURNS INT
-                    DETERMINISTIC
-                    BEGIN
-                    DECLARE XXX INT;
-                    DECLARE DATE INT;
-                    
-                    SET DATE = CURRENT_DATE();
-                    SET DATE = SUBSTR(DATE,3,6);
-                    SELECT MAX(serialNo) INTO XXX FROM project WHERE id LIKE CONCAT(DATE, '%');
-                    IF (XXX IS NULL) THEN
-                        SET XXX=0;
-                    END IF;
-                    SET XXX=XXX+1;
-                    RETURN XXX;
-                    END
-                    `;
-
-    await DB.pool.query(sqlQuery);
-  }
-  catch (error) {
-    console.log(error);
-  }
-};
-
-const GenerateProjectID = async () => {
+const CreateFuncGenerateProjectID = async () => {
   try {
     sqlQuery = `DROP FUNCTION IF EXISTS GenerateProjectID;
-                    CREATE FUNCTION GenerateUserID()
+                    CREATE FUNCTION GenerateProjectID()
                     RETURNS VARCHAR(255)
                     DETERMINISTIC
                     BEGIN
@@ -69,7 +40,7 @@ const GenerateProjectID = async () => {
                     
                     SET DATE=CURRENT_DATE();
                     SET DATE=SUBSTR(DATE,3,6);
-                    SELECT MAX(serialNo) into XXX from project WHERE id LIKE CONCAT(DATE, '%');
+                    SELECT COUNT(id) into XXX from project WHERE id LIKE CONCAT(DATE, '%');
                     IF (XXX IS NULL) THEN
                         SET XXX = 0;
                     END IF;
@@ -89,15 +60,14 @@ const GenerateProjectID = async () => {
   }
 };
 
-const updateProjectID = async () => {
+const CreateTrigUpdateProjectID = async () => {
   try {
     sqlQuery = `DROP TRIGGER IF EXISTS updateProjectID;
                     CREATE TRIGGER updateProjectID 
-                    BEFORE INSERT ON user
+                    BEFORE INSERT ON project
                     FOR EACH ROW
                     BEGIN
                     SET NEW.id = GenerateProjectID();
-                    SET NEW.serialNo = GenerateProjectSerialNo();  
                     END; 
                 `;
 
@@ -163,6 +133,5 @@ module.exports.getProjectById = getProjectById;
 module.exports.createNewProject = createNewProject;
 module.exports.DeleteProjectById = DeleteProjectById;
 module.exports.getProjectsByUserId = getProjectsByUserId;
-module.exports.GenerateProjectID = GenerateProjectID();
-module.exports.GenerateProjectSerialNo = GenerateProjectSerialNo();
-module.exports.updateProjectID = updateProjectID();
+module.exports.CreateFuncGenerateProjectID = CreateFuncGenerateProjectID;
+module.exports.CreateTrigUpdateProjectID = CreateTrigUpdateProjectID;

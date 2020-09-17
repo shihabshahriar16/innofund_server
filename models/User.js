@@ -21,35 +21,7 @@ const CreateUserSchema = async () => {
     }
 }
 
-const GenerateUserSerialNo = async () => {
-    try {
-        sqlQuery = `DROP FUNCTION IF EXISTS GenerateUserSerialNo;
-                    CREATE FUNCTION GenerateUserSerialNo()
-                    RETURNS INT
-                    DETERMINISTIC
-                    BEGIN
-                    DECLARE XXX INT;
-                    DECLARE DATE INT;
-                    
-                    SET DATE = CURRENT_DATE();
-                    SET DATE = SUBSTR(DATE,3,6);
-                    SELECT MAX(serialNo) INTO XXX FROM user WHERE id LIKE CONCAT(DATE, '%');
-                    IF (XXX IS NULL) THEN
-                        SET XXX=0;
-                    END IF;
-                    SET XXX=XXX+1;
-                    RETURN XXX;
-                    END
-                    `;
-
-        await DB.pool.query(sqlQuery);
-    }
-    catch (error) {
-        console.log(error);
-    }
-};
-
-const GenerateUserID = async () => {
+const CreateFuncGenerateUserID = async () => {
     try {
         sqlQuery = `DROP FUNCTION IF EXISTS GenerateUserID;
                     CREATE FUNCTION GenerateUserID()
@@ -62,7 +34,7 @@ const GenerateUserID = async () => {
                     
                     SET DATE=CURRENT_DATE();
                     SET DATE=SUBSTR(DATE,3,6);
-                    SELECT MAX(serialNo) into XXX from user WHERE id LIKE CONCAT(DATE, '%');
+                    SELECT COUNT(id) into XXX from user WHERE id LIKE CONCAT(DATE, '%');
                     IF (XXX IS NULL) THEN
                         SET XXX = 0;
                     END IF;
@@ -82,7 +54,7 @@ const GenerateUserID = async () => {
     }
 };
 
-const updateUserID = async () => {
+const CreateTrigUpdateUserID = async () => {
     try {
         sqlQuery = `DROP TRIGGER IF EXISTS updateUserID;
                     CREATE TRIGGER updateUserID 
@@ -90,7 +62,6 @@ const updateUserID = async () => {
                     FOR EACH ROW
                     BEGIN
                     SET NEW.id = GenerateUserID();
-                    SET NEW.serialNo = GenerateUserSerialNo();  
                     END; 
           `;
 
@@ -145,9 +116,8 @@ const getUserById = async (id) => {
   };
 
 module.exports.CreateUserSchema = CreateUserSchema;
-module.exports.GenerateUserID = GenerateUserID;
-module.exports.GenerateUserSerialNo = GenerateUserSerialNo;
-module.exports.updateUserID = updateUserID;
+module.exports.CreateFuncGenerateUserID = CreateFuncGenerateUserID;
+module.exports.CreateTrigUpdateUserID = CreateTrigUpdateUserID;
 module.exports.createFuncCalculateTotalInvestment = createFuncCalculateTotalInvestment;
 module.exports.calculateTotalInvestment = calculateTotalInvestment;
 module.exports.getUserById = getUserById;

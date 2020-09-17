@@ -20,16 +20,17 @@ const createProjectInvestorSchema = async () => {
     }
 };
 
-const UpdatePledgeTrigger = async () => {
+const CreateUpdatePledgeAndOptionTrigger = async () => {
     try {
-        sqltrigger =`DROP TRIGGER IF EXISTS UpdatePledge;
-            CREATE TRIGGER UpdatePledge BEFORE INSERT ON project_investor 
-            FOR EACH ROW 
-            BEGIN
-                UPDATE project
-                SET pledged = pledged + NEW.amount
-                WHERE id = NEW.project_id;
-            END;   
+        sqltrigger =`DROP TRIGGER IF EXISTS UpdatePledgeAndOption;
+                    CREATE TRIGGER UpdatePledgeAndOption BEFORE INSERT ON project_investor 
+                    FOR EACH ROW 
+                    BEGIN
+                        UPDATE project
+                        SET pledged = pledged + NEW.amount
+                        WHERE id = NEW.project_id;
+                        SET NEW.investment_option = calculateInvestmentOption(NEW.user_id, NEW.project_id);
+                    END;   
         `;
         await DB.pool.query(sqltrigger);
         await DB.pool.query(sqlQuery);
@@ -39,7 +40,7 @@ const UpdatePledgeTrigger = async () => {
 };
 
         
-const calculateInvestmentOption = async () => {
+const CreateFuncCalculateInvestmentOption = async () => {
     try {
         sqlQuery = `DROP FUNCTION IF EXISTS calculateInvestmentOption;
                     CREATE FUNCTION 
@@ -102,31 +103,9 @@ const calculateInvestmentOption = async () => {
     }
 };
 
-const updateInvestmentOption = async () => {
-    try {
-        sqlQuery = `DROP TRIGGER IF EXISTS updateInvestmentOption;
-                    CREATE TRIGGER updateInvestmentOption 
-                    BEFORE INSERT ON project_investor
-                    FOR EACH ROW
-                    BEGIN
-                    SET NEW.investment_option = calculateInvestmentOption(NEW.user_id, NEW.project_id);  
-                    END; 
-          `;
-
-        await DB.pool.query(sqlQuery);
-    }
-    catch (error) {
-        console.log(error);
-    }
-};
-
-
-
-
 
 
 module.exports.createProjectInvestorSchema = createProjectInvestorSchema;
-module.exports.UpdatePledgeTrigger = UpdatePledgeTrigger;
+module.exports.CreateUpdatePledgeAndOptionTrigger = CreateUpdatePledgeAndOptionTrigger;
 module.exports.createProjectInvestorSchema = createProjectInvestorSchema;
-module.exports.calculateInvestmentOption = calculateInvestmentOption;
-module.exports.updateInvestmentOption = updateInvestmentOption
+module.exports.CreateFuncCalculateInvestmentOption = CreateFuncCalculateInvestmentOption;

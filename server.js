@@ -27,10 +27,13 @@ ProjectSchema.createProjectSchema();
 CommentSchema.createCommentSchema();
 InvestmentOptionSchema.createInvestmentOptionSchema();
 ProjectInvestorSchema.createProjectInvestorSchema();
-ProjectInvestorSchema.UpdatePledgeTrigger();
-ProjectInvestorSchema.calculateInvestmentOption();
-ProjectInvestorSchema.updateInvestmentOption();
+ProjectInvestorSchema.CreateUpdatePledgeAndOptionTrigger();
+ProjectInvestorSchema.CreateFuncCalculateInvestmentOption();
 FaqSchema.createFaqSchema();
+UserSchema.CreateFuncGenerateUserID();
+UserSchema.CreateTrigUpdateUserID();
+ProjectSchema.CreateFuncGenerateProjectID();
+ProjectSchema.CreateTrigUpdateProjectID();
 
 
 app.use('/api',users);
