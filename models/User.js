@@ -115,9 +115,19 @@ const getUserById = async (id) => {
     }
   };
 
+const updateProfile = async (updatedInfo,id) =>{
+    try {
+       sqlQuery = `UPDATE user SET ? WHERE id='${id}'`;
+       await DB.pool.query(sqlQuery, updatedInfo); 
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
 module.exports.CreateUserSchema = CreateUserSchema;
 module.exports.CreateFuncGenerateUserID = CreateFuncGenerateUserID;
 module.exports.CreateTrigUpdateUserID = CreateTrigUpdateUserID;
 module.exports.createFuncCalculateTotalInvestment = createFuncCalculateTotalInvestment;
 module.exports.calculateTotalInvestment = calculateTotalInvestment;
 module.exports.getUserById = getUserById;
+module.exports.updateProfile = updateProfile;
