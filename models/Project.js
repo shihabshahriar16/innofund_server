@@ -74,6 +74,8 @@ const getProjectsByUserId = async (userId) => {
     console.error(error);
   }
 };
+
+
 module.exports.createProjectSchema = createProjectSchema;
 module.exports.getAllProjects = getAllProjects;
 module.exports.getProjectById = getProjectById;

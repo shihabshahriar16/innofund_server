@@ -25,6 +25,7 @@ ProjectSchema.createProjectSchema();
 CommentSchema.createCommentSchema();
 InvestmentOptionSchema.createInvestmentOptionSchema();
 ProjectInvestorSchema.createProjectInvestorSchema();
+ProjectInvestorSchema.UpdatePledgeTrigger();
 
 
 app.use('/api',users);
