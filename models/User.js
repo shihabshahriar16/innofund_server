@@ -4,7 +4,6 @@ const util = require('util');
 const CreateUserSchema = async () => {
     try {
         sqlQuery = `CREATE TABLE IF NOT EXISTS user(
-                    serialNo INT,
                     id VARCHAR(255) PRIMARY KEY,
                     name VARCHAR(255),
                     email VARCHAR(255) UNIQUE,
