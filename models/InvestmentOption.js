@@ -19,4 +19,15 @@ const createInvestmentOptionSchema = async () => {
     }
 };
 
+const AddNewScheme = async (newSchemeEntry) => {
+    try {
+        sqlQuery = `INSERT INTO investment_option SET ?`;
+
+        await DB.pool.query(sqlQuery, newSchemeEntry);
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 module.exports.createInvestmentOptionSchema = createInvestmentOptionSchema;
+module.exports.AddNewScheme = AddNewScheme;

@@ -9,6 +9,7 @@ const UserSchema = require('../models/User');
 const Comment = require('../models/Comment');
 const Faq = require('../models/Faq');
 const ProjectInvestor = require('../models/ProjectInvestor')
+const profit_scheme = require('../models/InvestmentOption')
 
 
 const SSLCommerz = require('sslcommerz-nodejs');
@@ -282,6 +283,38 @@ router.post(
             };
             await Faq.AddNewFaq(newFaqEntry)
             res.json({ msg: 'faq added' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('server error');
+        }
+    }
+);
+
+//  @route POST api/project/profit_scheme
+//  @desc post an PROFIT_SCHEME
+//  @access private
+router.post(
+    '/profit_scheme',
+    passport.authenticate('jwt', { session: false }),
+    async (req, res, next) => {
+        const project = await Project.getProjectById(req.body.project_id);
+
+        if (!project[0]) {
+            return res.status(400).json({ msg: 'no project found' });
+        }
+
+        if (req.user.id !== project[0].created_by_id) {
+            return res.status(401).json({ msg: 'user not authorized' });
+        }
+        try {
+
+            const newSchemeEntry = {
+                id: req.body.option,
+                project_id: req.body.project_id,
+                min_pledge: req.body.min_pledge
+            };
+            await profit_scheme.AddNewScheme(newSchemeEntry)
+            res.json({ msg: 'sceheme added' });
         } catch (error) {
             console.error(error);
             res.status(500).send('server error');
