@@ -1,3 +1,9 @@
+### Project description is given in 'Innofund.pdf'
+
+### Project front end at https://github.com/shihabshahriar16/innofund_client
+
+### Guidelines:
+
 -> Install mysql locally in linux
 
 sudo apt-get update
